@@ -9,8 +9,7 @@ public class Resource {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Lob
-    private byte[] data;
+    private String filePath;
 
     private String url;
 
@@ -22,12 +21,12 @@ public class Resource {
         this.id = id;
     }
 
-    public byte[] getData() {
-        return data;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public String getUrl() {
