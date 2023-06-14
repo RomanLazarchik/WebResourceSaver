@@ -1,9 +1,12 @@
 package com.example.webresourcesaver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ResourceStorageService {
+    private static final Logger logger = LoggerFactory.getLogger(ResourceStorageService.class);
 
     private final ResourceRepository resourceRepository;
 
@@ -17,5 +20,6 @@ public class ResourceStorageService {
         resource.setData(data);
 
         resourceRepository.save(resource);
+        logger.info("Resource saved: {}", url);
     }
 }
