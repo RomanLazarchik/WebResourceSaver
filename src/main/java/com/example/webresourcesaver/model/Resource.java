@@ -1,4 +1,4 @@
-package com.example.webresourcesaver;
+package com.example.webresourcesaver.model;
 
 import jakarta.persistence.*;
 

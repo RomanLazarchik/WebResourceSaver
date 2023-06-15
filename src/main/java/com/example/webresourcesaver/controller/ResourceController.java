@@ -1,5 +1,7 @@
-package com.example.webresourcesaver;
+package com.example.webresourcesaver.controller;
 
+import com.example.webresourcesaver.service.ResourceDownloadService;
+import com.example.webresourcesaver.model.UrlRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

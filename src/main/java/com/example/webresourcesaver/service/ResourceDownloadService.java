@@ -1,5 +1,7 @@
-package com.example.webresourcesaver;
+package com.example.webresourcesaver.service;
 
+import com.example.webresourcesaver.model.Resource;
+import com.example.webresourcesaver.repository.ResourceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
