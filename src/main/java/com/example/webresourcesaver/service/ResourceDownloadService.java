@@ -14,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class ResourceDownloadService {
@@ -46,6 +47,7 @@ public class ResourceDownloadService {
                             .transform(resourceStorageService::saveBinaryPart)
                             .doOnError(e -> logger.error("Error downloading resource from url: {}", url, e))
                             .then()
+                            .publishOn(Schedulers.boundedElastic())
                             .doOnSuccess(aVoid -> {
                                 Resource resource = new Resource();
                                 resource.setUrl(url);
