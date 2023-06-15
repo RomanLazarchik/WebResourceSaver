@@ -11,19 +11,15 @@ import org.slf4j.LoggerFactory;
 @RestController
 public class ResourceController {
     private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);
-
     private final ResourceDownloadService resourceDownloadService;
-    private final ResourceStorageService resourceStorageService;
 
-    public ResourceController(ResourceDownloadService resourceDownloadService, ResourceStorageService resourceStorageService) {
+    public ResourceController(ResourceDownloadService resourceDownloadService) {
         this.resourceDownloadService = resourceDownloadService;
-        this.resourceStorageService = resourceStorageService;
     }
 
     @PostMapping("/resource")
     public ResponseEntity<Void> saveResource(@Valid @RequestBody UrlRequest urlRequest) {
         resourceDownloadService.downloadResource(urlRequest.getUrl())
-                .thenAccept(data -> resourceStorageService.saveResource(urlRequest.getUrl(), data))
                 .exceptionally(error -> {
                     logger.error("Error saving resource: {}", error.getMessage());
                     return null;
@@ -31,3 +27,4 @@ public class ResourceController {
         return ResponseEntity.ok().build();
     }
 }
+

@@ -2,32 +2,36 @@ package com.example.webresourcesaver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.stereotype.Service;
-
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.UUID;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class ResourceStorageService {
     private static final Logger logger = LoggerFactory.getLogger(ResourceStorageService.class);
-
-    private final ResourceRepository resourceRepository;
-
-    public ResourceStorageService(ResourceRepository resourceRepository) {
-        this.resourceRepository = resourceRepository;
+       private String fileExtension;
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
     }
 
-    public void saveResource(String url, Path path) {
-        try {
-            Resource resource = new Resource();
-            resource.setUrl(url);
-            resource.setFilePath(path.toString());
 
-            resourceRepository.save(resource);
-            logger.info("Resource saved: {}", url);
-        } catch (Exception e) {
-            logger.error("Error saving resource: {}", e.getMessage(), e);
-        }
+    public Mono<Void> saveBinaryPart(Flux<DataBuffer> dataBufferFlux) {
+        String fileName = UUID.randomUUID() + fileExtension;
+        logger.info("File name: {}", fileName);
+        Path filePath = Path.of("C:\\downloads\\" + fileName);
+
+        return DataBufferUtils.write(dataBufferFlux, filePath, StandardOpenOption.WRITE, StandardOpenOption.CREATE)
+                .then();
     }
-}
+    }
+
+
+
+
+
+

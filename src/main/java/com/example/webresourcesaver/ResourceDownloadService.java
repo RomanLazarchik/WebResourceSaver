@@ -2,63 +2,74 @@ package com.example.webresourcesaver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.core.io.buffer.DataBuffer;
-import reactor.core.publisher.Flux;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
+import org.apache.tika.mime.MimeType;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
 
 @Service
 public class ResourceDownloadService {
-
     private static final Logger logger = LoggerFactory.getLogger(ResourceDownloadService.class);
-
     private final WebClient webClient;
+    private final ResourceStorageService resourceStorageService;
 
-    public ResourceDownloadService(WebClient.Builder webClientBuilder) {
+    public ResourceDownloadService(WebClient.Builder webClientBuilder, ResourceStorageService resourceStorageService) {
         this.webClient = webClientBuilder.build();
+        this.resourceStorageService = resourceStorageService;
     }
 
     @Async("asyncExecutor")
-    public CompletableFuture<Path> downloadResource(String url) {
+    public CompletableFuture<Void> downloadResource(String url) {
         logger.info("Attempting to download resource: {}", url);
-        Path filePath = Paths.get("C:\\downloads\\" + url.hashCode());
-        File file = filePath.toFile();
+        return webClient.get().uri(url)
+                .exchangeToMono(clientResponse -> {
+                    String contentType = clientResponse.headers().contentType()
+                            .map(org.springframework.util.MimeType::toString)
+                            .orElse("");
+                    logger.info("Content type: {}", contentType);
+                    String extension = getExtensionFromMimeType(contentType);
+                    resourceStorageService.setFileExtension(extension);
+                    return clientResponse.bodyToFlux(DataBuffer.class)
+                            .transform(resourceStorageService::saveBinaryPart) // change here
+                            .doOnError(e -> logger.error("Error downloading resource from url: {}", url, e))
+                            .then();
+                })
+                .toFuture();
+    }
 
-        Flux<DataBuffer> dataBufferFlux = webClient.get()
-                .uri(url)
-                .retrieve()
-                .bodyToFlux(DataBuffer.class);
 
-        dataBufferFlux.subscribe(dataBuffer -> {
-            try (FileOutputStream out = new FileOutputStream(file, true);
-                 InputStream is = dataBuffer.asInputStream()) {
+    private String getExtensionFromMimeType(String mimeType) {
+        if (mimeType == null || mimeType.isEmpty()) {
+            return "";
+        }
 
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = is.read(buffer)) != -1) {
-                    out.write(buffer, 0, bytesRead);
-                }
-            } catch (IOException e) {
-                logger.error("Error writing data to file: {}", filePath, e);
-                throw new ResourceDownloadException("Error writing data to file: " + filePath, e);
-            }
-        });
+        String baseMimeType = mimeType.split(";")[0]; // разделить MIME-тип и параметры
 
-        return CompletableFuture.completedFuture(filePath)
-                .exceptionally(throwable -> {
-                    logger.error("Error downloading resource from url: {}", url, throwable);
-                    throw new ResourceDownloadException("Error downloading resource from url: " + url, throwable);
-                });
+        if ("text/html".equals(baseMimeType)) {
+            return ".html";
+        }
+
+        if ("audio/mpeg".equals(baseMimeType)) {
+            return ".mp3";
+        }
+
+        // add other special cases here
+
+        MimeTypes allTypes = MimeTypes.getDefaultMimeTypes();
+        try {
+            MimeType mt = allTypes.forName(baseMimeType); // использовать baseMimeType здесь
+            return mt.getExtension();
+        } catch (MimeTypeException e) {
+            return "";  // return empty string if MIME type is not known
+        }
     }
 }
+
+
+
 
 

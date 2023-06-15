@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-
     @ExceptionHandler(ResourceDownloadException.class)
     public ResponseEntity<String> handleResourceDownloadException(ResourceDownloadException ex) {
         logger.error("Error handling resource download: {}", ex.getMessage());

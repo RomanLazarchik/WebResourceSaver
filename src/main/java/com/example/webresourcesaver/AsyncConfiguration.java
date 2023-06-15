@@ -5,13 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
 import java.util.concurrent.Executor;
 
 @Configuration
 public class AsyncConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(AsyncConfiguration.class);
-
 
     @Bean(name = "asyncExecutor")
     public Executor asyncExecutor() {
