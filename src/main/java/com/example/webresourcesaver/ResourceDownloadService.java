@@ -47,7 +47,8 @@ public class ResourceDownloadService {
                             .doOnSuccess(aVoid -> {
                                 Resource resource = new Resource();
                                 resource.setUrl(url);
-                                resource.setFilePath(resourceStorageService.getFileName()); // используем метод getFileName
+                                resource.setFilePath(resourceStorageService.getFilePath()); // используем метод getFilePath
+
                                 resourceRepository.save(resource);
                             });
                 })

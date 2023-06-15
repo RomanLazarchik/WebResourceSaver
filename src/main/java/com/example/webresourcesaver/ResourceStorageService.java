@@ -21,17 +21,17 @@ public class ResourceStorageService {
     public void setFileExtension(String fileExtension) {
         this.fileExtension = fileExtension;
     }
-    private String fileName;
+    private Path filePath;
 
-    public String getFileName() {
-        return fileName;
+    public String getFilePath() {
+        return filePath.toString(); // вернуть полный путь к файлу в виде строки
     }
 
 
     public Mono<Void> saveBinaryPart(Flux<DataBuffer> dataBufferFlux) {
-        fileName = UUID.randomUUID() + fileExtension;
+        String fileName = UUID.randomUUID() + fileExtension;
         logger.info("File name: {}", fileName);
-        Path filePath = Path.of("C:\\downloads\\" + fileName);
+        filePath = Path.of("C:\\downloads\\" + fileName); // сохранить полный путь к файлу
 
         return DataBufferUtils.write(dataBufferFlux, filePath, StandardOpenOption.WRITE, StandardOpenOption.CREATE)
                 .then();
