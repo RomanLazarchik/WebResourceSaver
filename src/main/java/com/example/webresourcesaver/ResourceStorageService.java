@@ -21,10 +21,15 @@ public class ResourceStorageService {
     public void setFileExtension(String fileExtension) {
         this.fileExtension = fileExtension;
     }
+    private String fileName;
+
+    public String getFileName() {
+        return fileName;
+    }
 
 
     public Mono<Void> saveBinaryPart(Flux<DataBuffer> dataBufferFlux) {
-        String fileName = UUID.randomUUID() + fileExtension;
+        fileName = UUID.randomUUID() + fileExtension;
         logger.info("File name: {}", fileName);
         Path filePath = Path.of("C:\\downloads\\" + fileName);
 

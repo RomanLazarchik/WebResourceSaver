@@ -18,11 +18,16 @@ public class ResourceDownloadService {
     private static final Logger logger = LoggerFactory.getLogger(ResourceDownloadService.class);
     private final WebClient webClient;
     private final ResourceStorageService resourceStorageService;
+    private final ResourceRepository resourceRepository;
 
-    public ResourceDownloadService(WebClient.Builder webClientBuilder, ResourceStorageService resourceStorageService) {
+    public ResourceDownloadService(WebClient.Builder webClientBuilder,
+                                   ResourceStorageService resourceStorageService,
+                                   ResourceRepository resourceRepository) { // Inject repository
         this.webClient = webClientBuilder.build();
         this.resourceStorageService = resourceStorageService;
+        this.resourceRepository = resourceRepository; // Initialize repository
     }
+
 
     @Async("asyncExecutor")
     public CompletableFuture<Void> downloadResource(String url) {
@@ -36,9 +41,15 @@ public class ResourceDownloadService {
                     String extension = getExtensionFromMimeType(contentType);
                     resourceStorageService.setFileExtension(extension);
                     return clientResponse.bodyToFlux(DataBuffer.class)
-                            .transform(resourceStorageService::saveBinaryPart) // change here
+                            .transform(resourceStorageService::saveBinaryPart)
                             .doOnError(e -> logger.error("Error downloading resource from url: {}", url, e))
-                            .then();
+                            .then()
+                            .doOnSuccess(aVoid -> {
+                                Resource resource = new Resource();
+                                resource.setUrl(url);
+                                resource.setFilePath(resourceStorageService.getFileName()); // используем метод getFileName
+                                resourceRepository.save(resource);
+                            });
                 })
                 .toFuture();
     }
