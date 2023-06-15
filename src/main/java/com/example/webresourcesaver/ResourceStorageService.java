@@ -4,9 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.stereotype.Service;
+
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.UUID;
+
 import org.springframework.core.io.buffer.DataBufferUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,7 +16,8 @@ import reactor.core.publisher.Mono;
 @Service
 public class ResourceStorageService {
     private static final Logger logger = LoggerFactory.getLogger(ResourceStorageService.class);
-       private String fileExtension;
+    private String fileExtension;
+
     public void setFileExtension(String fileExtension) {
         this.fileExtension = fileExtension;
     }
@@ -28,7 +31,7 @@ public class ResourceStorageService {
         return DataBufferUtils.write(dataBufferFlux, filePath, StandardOpenOption.WRITE, StandardOpenOption.CREATE)
                 .then();
     }
-    }
+}
 
 
 

@@ -6,7 +6,9 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import java.util.concurrent.CompletableFuture;
+
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
@@ -40,7 +42,6 @@ public class ResourceDownloadService {
                 })
                 .toFuture();
     }
-
 
     private String getExtensionFromMimeType(String mimeType) {
         if (mimeType == null || mimeType.isEmpty()) {
