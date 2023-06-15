@@ -1,6 +1,5 @@
-package com.example.webresourcesaver;
+package com.example.webresourcesaver.service;
 
-import com.example.webresourcesaver.service.ResourceStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.buffer.DataBuffer;
