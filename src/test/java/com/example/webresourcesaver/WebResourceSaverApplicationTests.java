@@ -1,6 +1,7 @@
-package com.example.webresourcesaver.service;
+package com.example.webresourcesaver;
 
 import com.example.webresourcesaver.model.UrlRequest;
+import com.example.webresourcesaver.service.ResourceDownloadService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
