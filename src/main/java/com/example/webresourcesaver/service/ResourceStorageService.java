@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 public class ResourceStorageService {
     private static final Logger logger = LoggerFactory.getLogger(ResourceStorageService.class);
     private String fileExtension;
-    private final Path basePath; // путь будет передан через конфигурацию
+    private final Path basePath;
 
     public ResourceStorageService(@Value("${file.storage.path}") String basePath) {
         this.basePath = Path.of(basePath);
@@ -31,13 +31,13 @@ public class ResourceStorageService {
     public Path filePath;
 
     public String getFilePath() {
-        return filePath.toString(); // вернуть полный путь к файлу в виде строки
+        return filePath.toString();
     }
 
     public Mono<Void> saveBinaryPart(Flux<DataBuffer> dataBufferFlux) {
         String fileName = UUID.randomUUID() + fileExtension;
         logger.info("File name: {}", fileName);
-        filePath = basePath.resolve(fileName); // сохранить полный путь к файлу
+        filePath = basePath.resolve(fileName);
 
         return DataBufferUtils.write(dataBufferFlux, filePath, StandardOpenOption.WRITE, StandardOpenOption.CREATE)
                 .then();

@@ -51,7 +51,7 @@ public class ResourceDownloadService {
                             .doOnSuccess(aVoid -> {
                                 Resource resource = new Resource();
                                 resource.setUrl(url);
-                                resource.setFilePath(resourceStorageService.getFilePath()); // используем метод getFilePath
+                                resource.setFilePath(resourceStorageService.getFilePath());
 
                                 resourceRepository.save(resource);
                             });
@@ -64,7 +64,7 @@ public class ResourceDownloadService {
             return "";
         }
 
-        String baseMimeType = mimeType.split(";")[0]; // разделить MIME-тип и параметры
+        String baseMimeType = mimeType.split(";")[0];
 
         if ("text/html".equals(baseMimeType)) {
             return ".html";
@@ -78,7 +78,7 @@ public class ResourceDownloadService {
 
         MimeTypes allTypes = MimeTypes.getDefaultMimeTypes();
         try {
-            MimeType mt = allTypes.forName(baseMimeType); // использовать baseMimeType здесь
+            MimeType mt = allTypes.forName(baseMimeType);
             return mt.getExtension();
         } catch (MimeTypeException e) {
             return "";  // return empty string if MIME type is not known
