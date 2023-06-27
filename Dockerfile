@@ -1,8 +1,6 @@
-FROM openjdk:17-slim
-
+FROM eclipse-temurin:latest
 WORKDIR /app
 
-COPY pom.xml ./
 COPY target/*.jar app.jar
 
 EXPOSE 8080

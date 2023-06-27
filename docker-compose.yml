@@ -11,7 +11,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
 
   app:
-    image: my-app:latest
+    build: .
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
@@ -23,8 +23,18 @@ services:
     depends_on:
       - db
     ports:
-      - 8080:8080
+      - "8080:8080"
 
 volumes:
   postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: D:/downloads/postgres_data
   downloads:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: D:/downloads
