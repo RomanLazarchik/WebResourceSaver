@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.UUID;
@@ -22,6 +23,9 @@ public class ResourceStorageService {
 
     public ResourceStorageService(@Value("${file.storage.path}") String basePath) {
         this.basePath = Path.of(basePath);
+        if (!Files.exists(this.basePath)) {
+            throw new RuntimeException("Path specified in 'file.storage.path' does not exist: " + basePath);
+        }
     }
 
     public void setFileExtension(String fileExtension) {
@@ -43,10 +47,3 @@ public class ResourceStorageService {
                 .then();
     }
 }
-
-
-
-
-
-
-

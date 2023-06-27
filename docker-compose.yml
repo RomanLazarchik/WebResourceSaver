@@ -27,14 +27,14 @@ services:
 
 volumes:
   postgres_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: D:/downloads/postgres_data
+#    driver: local
+#    driver_opts:
+#      type: none
+#      o: bind
+#      device: D:/downloads/postgres_data
   downloads:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: D:/downloads
+#    driver: local
+#    driver_opts:
+#      type: none
+#      o: bind
+#      device: D:/downloads

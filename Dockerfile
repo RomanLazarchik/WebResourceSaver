@@ -1,4 +1,5 @@
 FROM eclipse-temurin:latest
+
 WORKDIR /app
 
 COPY target/*.jar app.jar
